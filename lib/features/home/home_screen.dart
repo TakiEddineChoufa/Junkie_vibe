@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
+import '../profile/profile_screen.dart';
+import '../detail/detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -109,11 +111,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 26),
                 _sectionTitle("New On Junkie Vibes"),
-                _posterRail(_newOnPosters),
+                _posterRail(context, _newOnPosters),
                 _sectionTitle("You May Like"),
-                _posterRail(_youMayLikeTop),
+                _posterRail(context, _youMayLikeTop),
                 _sectionTitle("You May Like"),
-                _posterRail(_youMayLikeBottom),
+                _posterRail(context, _youMayLikeBottom),
               ],
             ),
           ),
@@ -161,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _posterRail(List<String> posters) {
+  Widget _posterRail(BuildContext context, List<String> posters) {
     return SizedBox(
       height: 240,
       child: ListView.separated(
@@ -170,34 +172,41 @@ class _HomeScreenState extends State<HomeScreen> {
         physics: const BouncingScrollPhysics(),
         itemCount: posters.length,
         separatorBuilder: (_, __) => const SizedBox(width: 16),
-        itemBuilder: (context, index) => _posterCard(posters[index]),
+        itemBuilder: (context, index) => _posterCard(context, posters[index]),
       ),
     );
   }
 
-  Widget _posterCard(String assetPath) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Container(
-            height: 180,
-            width: 130,
-            color: JunkieColors.card,
-            child: Image.asset(assetPath, fit: BoxFit.cover),
-          ),
+  Widget _posterCard(BuildContext context, String assetPath) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => DetailScreen(posterPath: assetPath),
         ),
-        const SizedBox(height: 10),
-        Container(
-          height: 3,
-          width: 80,
-          decoration: BoxDecoration(
-            color: JunkieColors.accent,
-            borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              height: 180,
+              width: 130,
+              color: JunkieColors.card,
+              child: Image.asset(assetPath, fit: BoxFit.cover),
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 10),
+          Container(
+            height: 3,
+            width: 80,
+            decoration: BoxDecoration(
+              color: JunkieColors.accent,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -206,6 +215,22 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: JunkieColors.background,
       selectedItemColor: JunkieColors.accent,
       unselectedItemColor: JunkieColors.text.withOpacity(0.6),
+      currentIndex: 0,
+      onTap: (index) {
+        if (index == 2) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ProfileScreen()),
+          );
+        } else if (index == 1) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Soon & Hot coming soon"),
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      },
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
         BottomNavigationBarItem(
