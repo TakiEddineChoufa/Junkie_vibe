@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 import '../profile/profile_screen.dart';
-import '../detail/detail_screen.dart';
+import '../details/detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<String> _categories = const ["Shows", "Movies", "For You"];
   late final List<String> _newOnPosters;
-  late final List<String> _youMayLikeTop;
+  late final List<String> _Trending;
   late final List<String> _youMayLikeBottom;
   int _selectedCategoryIndex = 1;
 
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _newOnPosters = _buildPosterSequence();
-    _youMayLikeTop = _buildPosterSequence();
+    _Trending = _buildPosterSequence();
     _youMayLikeBottom = _buildPosterSequence();
   }
 
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           shape: BoxShape.circle,
                         ),
                         padding: const EdgeInsets.all(8),
-                        child: const Icon(Icons.search, color: Colors.white, size: 26),
+                        child: const Icon(Icons.search, color: Color.fromARGB(204, 255, 255, 255), size: 26),
                       ),
                     ],
                   ),
@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Align(
                     alignment: Alignment.center,
                     child: Container(
-                      height: 3,
+                      height: 5,
                       width: 110,
                       decoration: BoxDecoration(
                         color: JunkieColors.accent,
@@ -110,10 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 26),
-                _sectionTitle("New On Junkie Vibes"),
+                _sectionTitle("New On JV"),
                 _posterRail(context, _newOnPosters),
-                _sectionTitle("You May Like"),
-                _posterRail(context, _youMayLikeTop),
+                _sectionTitle("Trending On JV"),
+                _posterRail(context, _Trending),
                 _sectionTitle("You May Like"),
                 _posterRail(context, _youMayLikeBottom),
               ],
@@ -198,8 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
           Container(
-            height: 3,
-            width: 80,
+            height: 5,
+            width: 130,
             decoration: BoxDecoration(
               color: JunkieColors.accent,
               borderRadius: BorderRadius.circular(8),
