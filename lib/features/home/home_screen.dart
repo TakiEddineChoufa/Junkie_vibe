@@ -1,8 +1,42 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final Random _random = Random();
+  final List<String> _allPosters = List.generate(
+    22,
+    (index) => "assets/poster${index + 1}.jpg",
+  );
+
+  final List<String> _categories = const ["Shows", "Movies", "For You"];
+  late final List<String> _newOnPosters;
+  late final List<String> _youMayLikeTop;
+  late final List<String> _youMayLikeBottom;
+  int _selectedCategoryIndex = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _newOnPosters = _buildPosterSequence();
+    _youMayLikeTop = _buildPosterSequence();
+    _youMayLikeBottom = _buildPosterSequence();
+  }
+
+  List<String> _buildPosterSequence({int count = 12}) {
+    final shuffled = List.of(_allPosters)..shuffle(_random);
+    return List<String>.generate(
+      count,
+      (index) => shuffled[index % shuffled.length],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,78 +44,81 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: JunkieColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset("assets/logo.png", height: 40),
-                        const SizedBox(width: 10),
-                        const Text(
-                          "Home",
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: JunkieColors.text,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset("assets/logo.png", height: 44),
+                          const SizedBox(width: 12),
+                          const Text(
+                            "Home",
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: JunkieColors.text,
+                            ),
                           ),
+                        ],
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: JunkieColors.text.withOpacity(0.4), width: 1.4),
+                          shape: BoxShape.circle,
                         ),
-                      ],
+                        padding: const EdgeInsets.all(8),
+                        child: const Icon(Icons.search, color: Colors.white, size: 26),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      _categories.length,
+                      (index) => _categoryButton(
+                        _categories[index],
+                        selected: index == _selectedCategoryIndex,
+                      ),
                     ),
-                    const Icon(Icons.search, color: Colors.white, size: 32),
-                  ],
+                  ),
                 ),
-              ),
-
-            
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _categoryButton("Shows"),
-                    _categoryButton("Movies"),
-                    _categoryButton("For You"),
-                  ],
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 3,
+                      width: 110,
+                      decoration: BoxDecoration(
+                        color: JunkieColors.accent,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  height: 3,
-                  width: 90,
-                  color: JunkieColors.accent,
-                ),
-              ),
-
-              const SizedBox(height: 25),
-
-              
-              _sectionTitle("New On Junkie Vibes"),
-              _posterList(),
-
-              
-              _sectionTitle("Trending"),
-              _posterList(),
-
-            
-              _sectionTitle("You May Like"),
-              _posterList(),
-
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 26),
+                _sectionTitle("New On Junkie Vibes"),
+                _posterRail(_newOnPosters),
+                _sectionTitle("You May Like"),
+                _posterRail(_youMayLikeTop),
+                _sectionTitle("You May Like"),
+                _posterRail(_youMayLikeBottom),
+              ],
+            ),
           ),
         ),
       ),
-
       bottomNavigationBar: _bottomNav(),
     );
   }
@@ -124,55 +161,58 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _posterList() {
+  Widget _posterRail(List<String> posters) {
     return SizedBox(
-      height: 220,
+      height: 240,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         scrollDirection: Axis.horizontal,
-        itemCount: 6,
-        separatorBuilder: (_, __) => const SizedBox(width: 14),
-        itemBuilder: (context, index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Poster Image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  height: 160,
-                  width: 110,
-                  color: JunkieColors.card,
-                  child: Image.asset(
-                    "assets/poster${(index % 4) + 1}.jpg",
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-
-              // Orange line under poster
-              Container(
-                height: 3,
-                width: 85,
-                color: JunkieColors.accent,
-              )
-            ],
-          );
-        },
+        physics: const BouncingScrollPhysics(),
+        itemCount: posters.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 16),
+        itemBuilder: (context, index) => _posterCard(posters[index]),
       ),
+    );
+  }
+
+  Widget _posterCard(String assetPath) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            height: 180,
+            width: 130,
+            color: JunkieColors.card,
+            child: Image.asset(assetPath, fit: BoxFit.cover),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          height: 3,
+          width: 80,
+          decoration: BoxDecoration(
+            color: JunkieColors.accent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _bottomNav() {
     return BottomNavigationBar(
+      backgroundColor: JunkieColors.background,
+      selectedItemColor: JunkieColors.accent,
+      unselectedItemColor: JunkieColors.text.withOpacity(0.6),
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
         BottomNavigationBarItem(
           icon: Icon(Icons.change_history),
           label: "Soon&Hot",
         ),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: "My Junkie"),
+        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "My Junkie"),
       ],
     );
   }
