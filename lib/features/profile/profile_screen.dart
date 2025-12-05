@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
+import 'edit_profile.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -73,7 +74,11 @@ class ProfileScreen extends StatelessWidget {
         Image.asset("assets/logo.png", height: 44),
         IconButton(
           icon: Icon(Icons.edit, color: JunkieColors.accent, size: 26),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const EditProfileScreen()),
+            );
+          },
         ),
       ],
     );
