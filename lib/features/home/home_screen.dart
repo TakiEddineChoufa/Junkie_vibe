@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
 import '../profile/profile_screen.dart';
 import '../details/detail_screen.dart';
+import '../search/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,13 +71,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: JunkieColors.text.withOpacity(0.4), width: 1.4),
-                          shape: BoxShape.circle,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const SearchScreen()),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: JunkieColors.text.withOpacity(0.4), width: 1.4),
+                            shape: BoxShape.circle,
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: const Icon(Icons.search, color: Color.fromARGB(204, 255, 255, 255), size: 26),
                         ),
-                        padding: const EdgeInsets.all(8),
-                        child: const Icon(Icons.search, color: Color.fromARGB(204, 255, 255, 255), size: 26),
                       ),
                     ],
                   ),
