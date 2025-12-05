@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../core/theme/colors.dart';
+import '../foryou/foryou_screen.dart';
 import '../profile/profile_screen.dart';
 import '../details/detail_screen.dart';
 import '../search/search_screen.dart';
@@ -97,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _categories.length,
                       (index) => _categoryButton(
                         _categories[index],
+                        index: index,
                         selected: index == _selectedCategoryIndex,
                       ),
                     ),
@@ -133,19 +135,29 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _categoryButton(String text, {bool selected = false}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: JunkieColors.accent, width: 2),
-        color: selected ? JunkieColors.accent.withOpacity(0.2) : Colors.transparent,
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: selected ? JunkieColors.accent : JunkieColors.text,
-          fontWeight: FontWeight.w600,
+  Widget _categoryButton(String text, {required int index, bool selected = false}) {
+    return GestureDetector(
+      onTap: () {
+        setState(() => _selectedCategoryIndex = index);
+        if (text == "For You") {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const ForYouScreen()),
+          );
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(color: JunkieColors.accent, width: 2),
+          color: selected ? JunkieColors.accent.withOpacity(0.2) : Colors.transparent,
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: selected ? JunkieColors.accent : JunkieColors.text,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
