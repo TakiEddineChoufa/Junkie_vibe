@@ -15,7 +15,7 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _topBar(),
+              _topBar(context),
               const SizedBox(height: 20),
               _avatar(),
               const SizedBox(height: 18),
@@ -63,7 +63,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _topBar() {
+  Widget _topBar(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
